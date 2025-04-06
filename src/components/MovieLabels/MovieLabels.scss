@@ -1,0 +1,16 @@
+@import '@/assets/styles/helpers/variables';
+
+.MovieLabels {
+  &__rate {
+    margin-right: 0.5rem;
+    &--green {
+      color: $green;
+    }
+    &--yellow {
+      color: $yellow;
+    }
+    &--red {
+      color: $red;
+    }
+  }
+}
