@@ -1,49 +1,79 @@
 <template>
   <div
     class="MovieSliderItem"
-    :style="{ backgroundImage: 'url(' + getImageUrl(movie.backdrop_path, 1) + ')' }"
+    :style="{
+      backgroundImage: getBackgroundImageUrl(movie.backdrop_url),
+    }"
   >
     <div class="MovieSliderItem__details">
       <h3 class="MovieSliderItem__title">
         {{ movie.title || movie.name }}
       </h3>
-      <MovieLabels :movie="movie" />
-      <button class="MovieSliderItem__btn" @click="selectMovie(movie)">
-        <font-awesome-icon :icon="['fas', 'info-circle']" />
-      </button>
+      <div class="flex">
+        <button type="button" class="btn btn--play MovieSliderItem__btn" @click="addMovieToMyList">
+          <font-awesome-icon
+            :icon="['fas', 'play']"
+            class="MovieSliderItem__btn-icon"
+            fixed-width
+          />
+        </button>
+        <tippy content="Thêm vào danh sách của tôi" theme="light" placement="top" :arrow="true">
+          <button
+            type="button"
+            class="btn btn--blur MovieSliderItem__btn"
+            @click="addMovieToMyList"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'plus']"
+              class="MovieSliderItem__btn-icon"
+              fixed-width
+            />
+          </button>
+        </tippy>
+        <tippy
+          content="Thông tin"
+          theme="light"
+          placement="top"
+          class="ml-auto"
+          :arrow="true"
+          @click="handleDetailClick"
+        >
+          <button
+            type="button"
+            class="btn btn--blur MovieSliderItem__btn"
+            @click="addMovieToMyList"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'info-circle']"
+              class="MovieSliderItem__btn-icon"
+              fixed-width
+            />
+          </button>
+        </tippy>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import MovieLabels from '@/components/MovieLabels/MovieLabels.vue'
-import getImageUrl from '@/helpers/getImageUrl'
+<script setup>
+import { Tippy } from 'vue-tippy'
+import useEmitter from '@/composables/useEmitter'
 
-export default {
-  name: 'MovieSliderItem',
-  props: {
-    movie: {
-      name: String,
-      title: String,
-      overview: String,
-      backdrop_path: String,
-    },
+const props = defineProps({
+  movie: {
+    name: String,
+    title: String,
+    backdrop_url: String,
   },
-  components: {
-    MovieLabels,
-  },
-  methods: {
-    getImageUrl(url, size) {
-      return getImageUrl(url, size, 'backdrop')
-    },
-    selectMovie(movie) {
-      const slide = this.$el.parentNode
-      const slider = slide.parentNode
-      slider.childNodes.forEach((slide) => slide.classList.remove('Slider__slide--selected'))
-      slide.classList.add('Slider__slide--selected')
-      this.$emit('select-movie', movie)
-    },
-  },
+})
+const emitter = useEmitter()
+
+const getBackgroundImageUrl = (url) => {
+  return `url(${url})`
+}
+
+const handleDetailClick = () => {
+  emitter.emit('openMovieModal', props.movie)
 }
 </script>
 

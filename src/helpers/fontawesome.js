@@ -11,6 +11,7 @@ import {
   faPlusCircle,
   faInfoCircle,
   faSearch,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -31,4 +32,5 @@ library.add(
   faPlusCircle,
   faInfoCircle,
   faSearch,
+  faTimes,
 );

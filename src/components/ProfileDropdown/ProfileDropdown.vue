@@ -1,6 +1,6 @@
 <template>
   <div class="ProfileDropdown">
-    <div class="ProfileDropdown__avatar" />
+    <img :src="auth.user.photoURL" class="ProfileDropdown__avatar" />
     <div class="ProfileDropdown__arrow">
       <font-awesome-icon :icon="['fas', 'sort-down']" />
     </div>

@@ -20,9 +20,10 @@
     position: absolute;
     bottom: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     padding: 1rem 0;
+    color: white;
   }
 
   &__slides {
@@ -111,4 +112,18 @@
 
 .Slider__nav-button[disabled] {
   cursor: default;
+}
+
+.Slider__nav-button {
+  position: absolute;
+  top: -90px;
+  color: white;
+
+  &--prev {
+    left: 0;
+  }
+
+  &--next {
+    right: 0;
+  }
 }

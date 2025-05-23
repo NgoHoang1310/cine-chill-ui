@@ -7,10 +7,11 @@ export const routes = {
   recoverPasswordCode: '/recover-password/:code',
 
   home: '/home',
-  tvShows: '/tv-shows',
+  series: '/series',
   movies: '/movies',
   popular: '/popular',
   myList: '/my-list',
+  languages: '/languages',
   search: '/search',
 };
 
@@ -34,3 +35,8 @@ export const actions = {
   addMovieToMyList: 'addMovieToMyList',
   removeMovieFromMyList: 'removeMovieFromMyList',
 };
+
+export const CONTENT_TYPE = {
+  MOVIE: 0,
+  SERIES: 1,
+}

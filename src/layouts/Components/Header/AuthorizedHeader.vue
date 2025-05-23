@@ -1,25 +1,15 @@
 <template>
   <header :class="[{ 'Header--bg': isScrolled }, 'Header']">
     <router-link :to="homeRoute">
-      <!-- <NetflixLogo class="Header__logo" /> -->
+      <NetflixLogo class="Header__logo" />
     </router-link>
 
     <nav :class="[{ 'Header__nav--opened': isMenuOpened }, 'Header__nav']">
       <ul class="Header__nav-list">
         <li class="Header__nav-item" v-for="(navItem, index) in navList" :key="index">
-          <router-link v-if="!navItem.nav" class="Header__nav-link" :to="navItem.link">
+          <router-link class="Header__nav-link" :to="navItem.link">
             {{ navItem.title }}
           </router-link>
-          <div v-else class="Header__nav-link">
-            {{ navItem.title }}
-            <div class="dropdown">
-              <div class="dropdown__list" v-for="(dropdownItem, index) in navItem.nav" :key="index">
-                <router-link class="dropdown__btn" :to="`${navItem.link}/${dropdownItem.id}`">
-                  {{ dropdownItem.name }}
-                </router-link>
-              </div>
-            </div>
-          </div>
         </li>
       </ul>
     </nav>
@@ -55,7 +45,7 @@
 import ProfileDropdown from '@/components/ProfileDropdown/ProfileDropdown.vue'
 import NetflixLogo from '@/assets/images/netflix.svg'
 import debounce from '@/helpers/debounce'
-import { routes, actions } from '@/helpers/constants'
+import { routes } from '@/helpers/constants'
 
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -71,28 +61,18 @@ const isMenuOpened = ref(false)
 const homeRoute = routes.home
 
 const navList = ref([
-  { title: 'Home', link: routes.home },
-  { title: 'TV Shows', link: routes.tvShows, nav: [] },
-  { title: 'Movies', link: routes.movies, nav: [] },
-  { title: 'New & Popular', link: routes.popular },
-  { title: 'My List', link: routes.myList },
+  { title: 'Trang chủ', link: routes.home },
+  { title: 'Series', link: routes.series },
+  { title: 'Phim', link: routes.movies },
+  { title: 'Mới & Phổ biến', link: routes.popular },
+  { title: 'Danh sách của tôi', link: routes.myList },
+  { title: 'Duyệt theo ngôn ngữ', link: routes.languages },
 ])
 
 const path = computed(() => route.path)
-const genres = computed(() => store.shared.genres)
 
 watch(path, () => {
   isMenuOpened.value = false
-})
-
-watch(genres, (value) => {
-  if (value) {
-    navList.value = navList.value.map((item) => {
-      if (item.title === 'TV Shows') return { ...item, nav: value.tv }
-      if (item.title === 'Movies') return { ...item, nav: value.movies }
-      return item
-    })
-  }
 })
 
 watch(

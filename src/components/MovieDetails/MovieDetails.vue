@@ -1,73 +1,88 @@
 <template>
   <div
     class="MovieDetails"
-    :style="{ backgroundImage: getBackgroundImageUrl(movie.backdrop_path, 2) }"
+    :class="removeTransitonEffect ? 'before:!h-0' : ''"
+    :style="{
+      backgroundImage: getBackgroundImageUrl(movie.backdrop_url),
+    }"
   >
-    <div class="MovieDetails__fade--top" />
+    <div class="MovieDetails__fade--top" :style="removeTransitonEffect ? 'height: 0;' : ''" />
     <div class="MovieDetails__wrapper">
       <h1 class="MovieDetails__title">
-        {{ movie.title || movie.name }}
+        {{ movie.title }}
       </h1>
-      <MovieLabels :movie="movie" />
       <div class="MovieDetails__details">
-        <p class="MovieDetails__description">
-          {{ movie.overview }}
+        <p v-if="enableOverview" class="line-clamp-4 MovieDetails__description">
+          {{ movie.description }}
         </p>
-        <p class="MovieDetails__description">
-          Genres: <span class="MovieDetails__description--white">{{ movieGenres }}</span>
-        </p>
-        <button
-          v-if="!isMovieInMyList"
-          type="button"
-          class="btn MovieDetails__btn"
-          @click="addMovieToMyList"
-        >
-          <font-awesome-icon :icon="['fas', 'plus']" class="MovieDetails__btn-icon" fixed-width />
-          My List
-        </button>
-        <button v-else type="button" class="btn MovieDetails__btn" @click="removeMovieFromMyList">
-          <font-awesome-icon :icon="['fas', 'minus']" class="MovieDetails__btn-icon" fixed-width />
-          My List
-        </button>
+        <div class="flex">
+          <button type="button" class="btn btn--play MovieDetails__btn" @click="addMovieToMyList">
+            <font-awesome-icon :icon="['fas', 'play']" class="MovieDetails__btn-icon" fixed-width />
+            Phát
+          </button>
+          <tippy
+            class="flex items-center"
+            content="Thêm vào danh sách của tôi"
+            theme="light"
+            placement="top"
+            :arrow="true"
+          >
+            <button
+              v-if="enableMyListButton"
+              type="button"
+              class="btn btn--blur MovieSliderItem__btn"
+              @click="addMovieToMyList"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'plus']"
+                class="MovieSliderItem__btn-icon"
+                fixed-width
+              />
+            </button>
+          </tippy>
+          <button
+            v-if="enableDetailButton"
+            type="button"
+            class="btn btn--blur MovieDetails__btn"
+            @click="handleDetailClick"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'info-circle']"
+              class="MovieDetails__btn-icon"
+              fixed-width
+            />
+            Thông tin khác
+          </button>
+        </div>
       </div>
     </div>
-    <div class="MovieDetails__fade--bottom" />
+    <div class="MovieDetails__fade--bottom" :style="removeTransitonEffect ? 'height: 0;' : ''" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { Tippy } from 'vue-tippy'
 import { useStore } from '@/store'
-import MovieLabels from '../MovieLabels/MovieLabels.vue'
-import getImageUrl from '../../helpers/getImageUrl'
+import useEmitter from '@/composables/useEmitter'
 
 const props = defineProps<{
   movie: {
     id: number
-    name: string
     title: string
-    overview: string
-    genre_ids: number[]
-    backdrop_path: string
+    description: string
+    backdrop_url: string
   }
+  enableOverview?: boolean
+  enableMyListButton?: boolean
+  enableDetailButton?: boolean
+  removeTransitonEffect?: boolean
 }>()
 
 const store = useStore()
+const emitter = useEmitter()
 
-const movieGenres = computed(() => {
-  if (!store.shared.genres) return ''
-  return store.shared.genres.movies
-    .filter(({ id }: { id: number }) => props.movie.genre_ids.includes(id))
-    .map(({ name }: { name: string }) => name)
-    .join(', ')
-})
-
-const isMovieInMyList = computed(() => {
-  return store.myList.myList?.find(({ id }: { id: number }) => id === props.movie.id)
-})
-
-const getBackgroundImageUrl = (url: string, size: number) => {
-  return `url(${getImageUrl(url, size, 'backdrop')})`
+const getBackgroundImageUrl = (url: string) => {
+  return `url(${url})`
 }
 
 const addMovieToMyList = () => {
@@ -76,10 +91,8 @@ const addMovieToMyList = () => {
   })
 }
 
-const removeMovieFromMyList = () => {
-  store.myList.removeMovieFromMyList({
-    movie: props.movie,
-  })
+const handleDetailClick = () => {
+  emitter.emit('openMovieModal', props.movie)
 }
 </script>
 

@@ -2,27 +2,27 @@
   position: relative;
   display: inline-block;
   width: auto;
-  padding: .3rem .9rem;
+  padding: 0.3rem 0.9rem;
   font-size: 1rem;
   color: $white;
   text-align: center;
   white-space: nowrap;
-  border-radius: .18rem;
+  border-radius: 0.18rem;
   outline: none;
   cursor: pointer;
-  transition: all .2s ease-out;
+  transition: all 0.2s ease-out;
   &:not(:last-child) {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
 
   @include sm {
-    padding: .4rem 1.1rem;
+    padding: 0.4rem 1.1rem;
   }
 
   &--primary {
     border: 1px solid $primary-btn;
     background-color: $primary-btn;
-    box-shadow: 0 1px 0 rgba(0,0,0,.45);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
     &:hover {
       background: $primary-btn-hover;
     }
@@ -31,9 +31,29 @@
   &--secondary {
     border: 1px solid $primary-btn;
     background-color: transparent;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, .45);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
     &:hover {
       border-color: $primary-btn-hover;
+    }
+  }
+
+  &--play {
+    color: $black;
+    border: 1px solid $white;
+    background-color: $white;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &--blur {
+    color: $white;
+    border: 1px solid $gray700;
+    background-color: $gray800;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+    &:hover {
+      opacity: 0.8;
     }
   }
 

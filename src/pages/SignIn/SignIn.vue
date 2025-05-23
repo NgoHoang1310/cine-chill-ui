@@ -1,67 +1,60 @@
 <script setup lang="ts">
+import background from '@/assets/images/background/website.jpg'
 import Spinner from '@/components/Spinner/Spinner.vue'
 import { routes } from '@/helpers/constants'
-import { ref, onUnmounted, computed, onMounted, watch, nextTick } from 'vue'
-import { useStore } from '@/store'
+import router from '@/router'
+import { toast } from 'vue3-toastify'
 
-const { auth } = useStore()
+const { auth, shared } = useStore()
 
 // Khai báo các state cần thiết
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const signUpRoute = routes.signUp
-
-// Computed properties
-// const user = computed(() => store.user)
-
 const loading = computed(() => auth.loading)
-
-// const error = computed(() => {
-//   let template = ''
-//   if (!store.error) return null
-//   switch (store.error.code) {
-//     case 'auth/user-not-found':
-//       template =
-//         "<div>Sorry, we can\'t find an account with this email address. Please try again or " +
-//         "<router-link to='/sign-up'>create a new account.</router-link></div>"
-//       break
-//     case 'auth/wrong-password':
-//       template =
-//         '<div><b>Incorrect password.</b> Please try again or you can ' +
-//         "<router-link to='/recover-password'>reset your password.</router-link></div>"
-//       break
-//     default:
-//       template = ''
-//   }
-//   return { template }
-// })
 
 // Các phương thức
 
-const handleSignIn = () => {
-  console.log('sign in')
-
-  // auth.signIn(email.value, password.value, rememberMe.value)
+const handleSignInWithEmailAndPassword = async () => {
+  await auth.loginWithEmailAndPassword(email.value, password.value)
 }
 
 const handleSignInWithGoogle = async () => {
   await auth.loginWithGoogle()
-  window.location.href = routes.home
 }
+
+watch(auth, async (newVal) => {
+  if (newVal.user) {
+    toast.success('Đăng nhập thành công')
+    setTimeout(() => {
+      router.push(routes.home)
+    }, 2000)
+  }
+})
+
+watch(shared, (newVal) => {
+  switch (newVal.error) {
+    case 'auth/email-already-in-use':
+      toast.error('Email đã được xử dụng. Vui lòng thử lại.')
+      break
+    case 'auth/invalid-credential':
+      toast.error('Email hoặc mật khẩu không đúng. Vui lòng thử lại.')
+      break
+    default:
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại.')
+  }
+})
 
 onUnmounted(() => {})
 </script>
 
 <template>
   <div class="SignIn">
-    <div class="bg tile">
+    <div :style="{ background: `url(${background})` }" class="bg tile">
       <div class="tile__container">
         <h1 class="tile__title">Sign In</h1>
-        <!-- <transition name="fade-height">
-          <div v-bind="error" v-if="error" class="form__error-message" />
-        </transition> -->
-        <form @submit.prevent="" class="form">
+        <form @submit.prevent="handleSignInWithEmailAndPassword" class="form">
           <div class="form__field">
             <div class="input__wrapper">
               <input
@@ -87,6 +80,9 @@ onUnmounted(() => {})
               />
               <label class="input__placeholder" for="password"> Password </label>
             </div>
+          </div>
+          <div class="form__btns">
+            <button type="submit" class="btn btn--primary" :disabled="loading">Sign In</button>
           </div>
           <div class="flex-jc">
             <div class="checkbox__wrapper">
@@ -135,7 +131,7 @@ onUnmounted(() => {})
           </li>
         </ul>
         <p>
-          New to netflix?
+          New to cinechill?
           <router-link class="link link--white" :to="signUpRoute">Sign up now.</router-link>
         </p>
         <div class="Spinner__overflow" v-if="loading">

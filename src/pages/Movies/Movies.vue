@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import MovieList from '@/components/MovieList/MovieList.vue'
 
 export default {

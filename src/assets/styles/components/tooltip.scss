@@ -1,0 +1,26 @@
+@import 'tippy.js/dist/tippy.css';
+
+/* Phần tooltip box */
+.tippy-box[data-theme~='light'] {
+  background-color: $gray200; /* Tailwind: bg-gray-200 */
+  color: $black; /* Tailwind: text-gray-900 */
+  font-weight: 600; /* Tailwind: font-semibold */
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Mũi tên */
+.tippy-box[data-theme~='light'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: $gray200;
+}
+.tippy-box[data-theme~='light'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: $gray200;
+}
+.tippy-box[data-theme~='light'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: $gray200;
+}
+.tippy-box[data-theme~='light'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: $gray200;
+}

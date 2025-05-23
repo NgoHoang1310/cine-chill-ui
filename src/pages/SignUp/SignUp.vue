@@ -1,9 +1,82 @@
+<script setup lang="ts">
+import Spinner from '@/components/Spinner/Spinner.vue'
+import background from '@/assets/images/background/website.jpg'
+
+import { toast } from 'vue3-toastify'
+import { routes } from '@/helpers/constants'
+
+const router = useRouter()
+const { auth, shared } = useStore()
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const loading = computed(() => auth.loading)
+const errors = ref<{
+  password: string[]
+  confirmPassword: string[]
+}>({
+  password: [],
+  confirmPassword: [],
+})
+
+const isFormValid = () => {
+  if (password.value !== confirmPassword.value) {
+    errors.value.confirmPassword.push('Passwords do not match.')
+  }
+  if (password.value.length < 6) {
+    errors.value.password.push('Password should be at least 6 characters.')
+  }
+  if (
+    password.value === password.value.toLowerCase() ||
+    password.value === password.value.toUpperCase()
+  ) {
+    errors.value.password.push('Contains at least one uppercase and lowercase characters.')
+  }
+  if (!isLatin(password.value)) {
+    errors.value.password.push('Latin characters and numbers only.')
+  }
+  return Object.values(errors.value).every((field) => field.length === 0)
+}
+
+const isLatin = (password: string) => {
+  const ifLatin = /^[a-zA-z0-9_]+$/g
+  return ifLatin.test(password)
+}
+
+const handleSignUpWithEmailAndPassword = async (email: string, password: string) => {
+  if (!isFormValid()) return null
+  await auth.registerWithEmailAndPassword(email, password)
+}
+
+watch(shared, (newVal) => {
+  switch (newVal.error) {
+    case 'auth/email-already-in-use':
+      toast.error('Email đã được xử dụng. Vui lòng thử lại.')
+      break
+    default:
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại.')
+  }
+})
+
+watch(auth, async (newVal) => {
+  if (newVal.user) {
+    toast.success('Đăng kí thành công')
+    setTimeout(() => {
+      router.push(routes.home)
+    }, 2000)
+  }
+})
+</script>
+
 <template>
   <div class="SignUp">
-    <div class="bg tile">
+    <div :style="{ background: `url(${background})` }" class="bg tile">
       <div class="tile__container">
         <h1 class="tile__title">Sign Up</h1>
-        <form @submit.prevent="onSignUp" class="form">
+        <form
+          @submit.prevent="() => handleSignUpWithEmailAndPassword(email, password)"
+          class="form"
+        >
           <div class="form__field">
             <div class="input__wrapper">
               <input
@@ -99,74 +172,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import Spinner from '@/components/Spinner/Spinner.vue'
-import { routes, actions } from '@/helpers/constants'
-
-export default {
-  name: 'SignUp',
-  data() {
-    return {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      errors: {
-        password: [],
-        confirmPassword: [],
-      },
-    }
-  },
-  computed: {
-    user() {
-      return this.$store.getters.user
-    },
-    loading() {
-      return this.$store.getters.loading
-    },
-  },
-  components: {
-    Spinner,
-  },
-  watch: {
-    user(value) {
-      if (value !== null && value !== undefined) {
-        this.$router.push(routes.home)
-      }
-    },
-  },
-  methods: {
-    isFormValid() {
-      const { password, confirmPassword } = this
-      this.errors = {
-        password: [],
-        confirmPassword: [],
-      }
-      if (password !== confirmPassword) {
-        this.errors.confirmPassword.push('Passwords do not match.')
-      }
-      if (password.length < 6) {
-        this.errors.password.push('Password should be at least 6 characters.')
-      }
-      if (password === password.toLowerCase() || password === password.toUpperCase()) {
-        this.errors.password.push('Contains at least one uppercase and lowercase characters.')
-      }
-      if (!this.isLatin(password)) {
-        this.errors.password.push('Latin characters and numbers only.')
-      }
-      return Object.values(this.errors).every((field) => field.length === 0)
-    },
-    isLatin(password) {
-      const ifLatin = /^[a-zA-z0-9_]+$/g
-      return ifLatin.test(password)
-    },
-    onSignUp() {
-      if (!this.isFormValid()) return null
-      this.$store.dispatch(actions.signUp, {
-        email: this.email,
-        password: this.password,
-      })
-    },
-  },
-}
-</script>

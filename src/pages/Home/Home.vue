@@ -1,83 +1,104 @@
 <template>
   <div class="Home">
     <div class="Home__main-slider">
-      <Slider ref="slider" :options="options">
-        <div :key="index" :class="`slide--${index}`" v-for="(movie, index) in movieList">
-          <MovieDetails :movie="movie" />
+      <Slider ref="sliderRef" :options="options">
+        <div :key="index" :class="`slide--${index}`" v-for="(movie, index) in slideShowMovies">
+          <MovieDetails :movie="movie" :enable-detail-button="true" :enable-overview="true" />
         </div>
       </Slider>
     </div>
-    <div class="Home__slider-list">
+    <div class="Home__slider-list" v-for="(slider, index) in sliders" :key="index">
       <MovieSlider
-        category-title="Netflix Originals"
-        request-url="discover/tv?api_key=7c3e2319f73271f06053b8573df6b971"
-      />
-      <MovieSlider
-        category-title="Trending Now"
-        request-url="trending/all/week?api_key=7c3e2319f73271f06053b8573df6b971"
-      />
-      <MovieSlider
-        category-title="Recently Added"
-        request-url="movie/now_playing?api_key=7c3e2319f73271f06053b8573df6b971"
-      />
-      <MovieSlider
-        category-title="Top Rated"
-        request-url="movie/top_rated?api_key=7c3e2319f73271f06053b8573df6b971"
+        :category-title="slider.title"
+        :category-key="slider.key"
+        :data="slider.movies"
+        :meta="slider.meta"
       />
     </div>
   </div>
+  <MovieModal />
 </template>
 
-<script>
-import axios from 'axios'
+<script setup>
+import { ref, onMounted } from 'vue'
 import Slider from '../../components/Slider/Slider.vue'
 import MovieDetails from '../../components/MovieDetails/MovieDetails.vue'
 import MovieSlider from '../../components/MovieSlider/MovieSlider.vue'
+import MovieModal from '@/components/Modal/MovieModal.vue'
+import * as apiServices from '@/services'
+import * as request from '@/helpers/http'
 
-export default {
-  name: 'Home',
-  data() {
-    return {
-      movieList: [],
-      options: {
-        dots: true,
-        autoplay: true,
-        slidesToShow: 1,
-        autoplaySpeed: 5000,
-        speed: 300,
-        timing: 'ease-in-out',
-      },
-    }
+// Reactive state
+const sliders = ref([
+  {
+    title: 'Phim lẻ hấp dẫn',
+    key: 'hot-movies',
+    movies: [],
+    meta: null,
+    requestUrl: '/core-service/movies',
   },
-  computed: {
-    // user() {
-    //   return this.$store.getters.user
-    // },
+  {
+    title: 'Series mới ra mắt',
+    key: 'latest-series',
+    movies: [],
+    meta: null,
+    requestUrl: '/core-service/series',
   },
-  components: {
-    Slider,
-    MovieDetails,
-    MovieSlider,
-  },
-  mounted() {
-    this.$refs.slider.toggleLoading()
-    this.$refs.slider.disableAutoPlay()
-    axios
-      .get('https://api.themoviedb.org/3/discover/movie?api_key=7c3e2319f73271f06053b8573df6b971')
-      .then((response) => {
-        this.movieList = response.data.results.splice(0, 10)
-      })
-      .then(() => {
-        this.$refs.slider.reload()
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-      .finally(() => {
-        this.$refs.slider.toggleLoading()
-      })
-  },
+])
+
+const slideShowMovies = ref([])
+const options = ref({
+  dots: true,
+  navButtons: false,
+  autoplay: false,
+  slidesToShow: 1,
+  autoplaySpeed: 5000,
+  speed: 300,
+  timing: 'ease-in-out',
+})
+
+// ref cho component Slider để gọi methods trên đó
+const sliderRef = ref(null)
+
+const fetchSlideShowMovies = async () => {
+  try {
+    const response = await apiServices.getMovies({ per_page: 10 })
+    slideShowMovies.value = response.result.data
+    await nextTick()
+    sliderRef.value.reload()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    sliderRef.value.toggleLoading()
+  }
 }
+
+const fetchSliderMovies = async (key, params) => {
+  const slider = sliders.value.find((s) => s.key === key)
+
+  if (!slider) return
+
+  try {
+    const response = await request.get(slider.requestUrl, {
+      params,
+    })
+    const { data, meta } = response.result
+
+    slider.movies = data
+    slider.meta = meta
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(async () => {
+  sliderRef.value.toggleLoading()
+  sliderRef.value.disableAutoPlay()
+
+  fetchSlideShowMovies()
+  fetchSliderMovies('hot-movies', { per_page: 10 })
+  fetchSliderMovies('latest-series', { per_page: 10 })
+})
 </script>
 
 <style lang="scss">

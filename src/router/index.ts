@@ -9,13 +9,15 @@ import TVShows from '@/pages/TVShows/TVShows.vue'
 import Popular from '@/pages/Popular/Popular.vue'
 import MyList from '@/pages/MyList/MyList.vue'
 import Search from '@/pages/Search/Search.vue'
+import NotFound from '@/pages/Error/NotFound.vue'
 import { routes } from '../helpers/constants'
 import { useStore } from '@/store'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/:pathMatch(.*)*', redirect: '/' },
+    { path: '/:pathMatch(.*)*', redirect: '/404' },
+    { path: '/404', name: 'NotFound', component: NotFound },
     {
       path: '/',
       component: DefaultLayout, // Dùng DefaultLayout cho tất cả
@@ -24,14 +26,14 @@ const router = createRouter({
         { path: routes.signUp, name: 'SignUp', component: SignUp, meta: { guestOnly: true } },
         { path: routes.home, name: 'Home', component: Home, meta: { requiresAuth: true } },
         {
-          path: `${routes.movies}/:id`,
+          path: `${routes.movies}`,
           name: 'Movies',
           component: Movies,
           meta: { requiresAuth: true },
         },
         {
-          path: `${routes.tvShows}/:id`,
-          name: 'TVShows',
+          path: `${routes.series}`,
+          name: 'Series',
           component: TVShows,
           meta: { requiresAuth: true },
         },

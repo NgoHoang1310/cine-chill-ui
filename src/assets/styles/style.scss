@@ -1,3 +1,6 @@
+// libraries
+@import 'vue3-toastify/dist/index.css';
+
 //helpers
 @import '../styles/helpers/breakpoints.scss';
 @import '../styles/helpers/variables.scss';
@@ -15,6 +18,7 @@
 @import '../styles/components/form.scss';
 @import '../styles/components/hamburger.scss';
 @import '../styles/components/dropdown.scss';
+@import '../styles/components/tooltip.scss';
 
 //transitions
 @import '../styles/transitions/fade/index.scss';
