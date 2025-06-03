@@ -2,8 +2,8 @@
   <Transition name="fade">
     <div v-if="modelValue" class="modal-overlay" @click.self="closeModal">
       <Transition name="zoom">
-        <div v-if="modelValue" class="modal-container">
-          <button class="modal-close" @click="closeModal">✕</button>
+        <div v-if="modelValue" class="modal-container" :class="classes">
+          <button v-if="showCloseButton" class="modal-close" @click="closeModal">✕</button>
           <div class="modal-content">
             <slot />
           </div>
@@ -16,7 +16,16 @@
 <script setup>
 defineProps({
   modelValue: Boolean,
+  classes: {
+    type: String,
+    default: '',
+  },
+  showCloseButton: {
+    type: Boolean,
+    default: true,
+  },
 })
+
 const emit = defineEmits(['update:modelValue'])
 const closeModal = () => emit('update:modelValue', false)
 </script>

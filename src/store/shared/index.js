@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import * as apiServices from '@/services'
 
 export const useConfigStore = defineStore('config', () => {
   const configuration = ref(null);
@@ -28,26 +29,12 @@ export const useConfigStore = defineStore('config', () => {
   }
 
   const setGenres = async () => {
-    const genres = {
-      tv: [],
-      movies: []
-    };
-
     try {
-      const movieResponse = await axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=7c3e2319f73271f06053b8573df6b971');
-      genres.movies = movieResponse.data.genres;
+      const response = await apiServices.getGenres({ per_page: 18 });
+      genres.value = response.result.data;
     } catch (error) {
       setError(error);
     }
-
-    try {
-      const tvResponse = await axios.get('https://api.themoviedb.org/3/genre/tv/list?api_key=7c3e2319f73271f06053b8573df6b971');
-      genres.tv = tvResponse.data.genres;
-    } catch (error) {
-      setError(error);
-    }
-
-    genres.value = genres;
   }
 
   return {

@@ -13,32 +13,16 @@
         {{ emptyTitle }}
       </div>
     </transition>
-    <transition name="fade">
-      <div v-if="selectedMovie" class="MovieList__details-backdrop" @click="unselectMovie">
-        <div @click.stop class="MovieList__details">
-          <MovieDetails :movie="selectedMovie" />
-          <button type="button" class="btn--close" @click="unselectMovie" />
-        </div>
-      </div>
-    </transition>
     <div v-if="loading" class="Spinner__overflow">
       <Spinner />
     </div>
-    <Pagination
-      v-if="totalPages"
-      :current-page="currentPage"
-      :total-pages="totalPages"
-      @load="loadMovies"
-    />
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 import MovieListItem from '../MovieListItem/MovieListItem.vue'
-import MovieDetails from '../MovieDetails/MovieDetails.vue'
-import Pagination from '../Pagination/Pagination.vue'
 import Spinner from '../Spinner/Spinner.vue'
+import * as request from '@/helpers/http'
 
 export default {
   name: 'MovieList',
@@ -54,13 +38,11 @@ export default {
       selectedMovie: null,
       currentPage: 1,
       totalPages: 0,
-      loading: false,
+      loading: true,
     }
   },
   components: {
     MovieListItem,
-    MovieDetails,
-    Pagination,
     Spinner,
   },
   watch: {
@@ -77,28 +59,23 @@ export default {
         this.movieList = value
         this.selectedMovie = null
       }
+
+      this.$nextTick(() => {
+        this.loading = false
+      })
     },
   },
   methods: {
-    toggleLoading() {
-      this.loading = !this.loading
-    },
     loadMovies() {
-      const { query } = this.$route
-      const params = { page: 1, api_key: process.env.VUE_APP_API_KEY }
-      for (const key in query) {
-        params[key] = decodeURIComponent(query[key])
-      }
+      const params = { per_page: 10 }
 
       if (!this.requestUrl) return
 
-      this.toggleLoading()
-      axios
-        .get(`https://api.themoviedb.org/3/${this.requestUrl}`, { params })
+      request
+        .get(this.requestUrl, { params })
         .then((response) => {
-          this.movieList = response.data.results
-          this.currentPage = response.data.page
-          this.totalPages = response.data.total_pages < 1000 ? response.data.total_pages : 1000
+          this.movieList = response.result.data
+          this.currentPage = response.result.meta.current_page
         })
         .then(() => {
           window.scrollTo(0, 0)

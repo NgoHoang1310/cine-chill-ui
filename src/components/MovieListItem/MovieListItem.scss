@@ -2,15 +2,13 @@
 @import '@/assets/styles/helpers/variables';
 
 .MovieListItem {
-  height: 24rem;
+  height: 10.5rem;
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
-  @include sm {
-    height: 28rem;
-  }
+  border-radius: 4px;
 
   &:hover {
     transform: scale(1.05);
@@ -22,7 +20,8 @@
   &__details {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
+    gap: 0.5rem;
     height: 100%;
     width: 100%;
     padding: 1rem;
@@ -40,10 +39,7 @@
   }
 
   &__description {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     color: $white;
+    margin: 0;
   }
 }

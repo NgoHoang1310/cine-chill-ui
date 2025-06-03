@@ -1,23 +1,18 @@
 <template>
-  <div class="page__content">
-    <h1 class="page__title">My List</h1>
-    <MovieList v-if="myMovieList.length !== 0" :initial-movie-list="myMovieList" />
-    <div v-else class="MovieList__empty">You haven't added any titles to your list yet.</div>
+  <div class="mylist">
+    <div class="mylist__slider-list mt-28">
+      <h3 class="text-3xl font-bold mb-6 ml-7">Danh sách của tôi</h3>
+      <MovieList :initial-movie-list="myList.myListGetter" empty-list-title="Không có dữ liêu" />
+    </div>
   </div>
 </template>
 
-<script>
-import MovieList from '@/components/MovieList/MovieList.vue'
+<script setup>
+import MovieList from '../../components/MovieList/MovieList.vue'
 
-export default {
-  name: 'MyList',
-  computed: {
-    myMovieList() {
-      return this.$store.getters.myList
-    },
-  },
-  components: {
-    MovieList,
-  },
-}
+const { myList } = useStore()
+
+onMounted(async () => {
+  myList.fetchMyList()
+})
 </script>

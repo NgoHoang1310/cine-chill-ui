@@ -16,7 +16,7 @@
           {{ movie.description }}
         </p>
         <div class="flex">
-          <button type="button" class="btn btn--play MovieDetails__btn" @click="addMovieToMyList">
+          <button type="button" class="btn btn--play MovieDetails__btn" @click="play(movie)">
             <font-awesome-icon :icon="['fas', 'play']" class="MovieDetails__btn-icon" fixed-width />
             Phát
           </button>
@@ -28,13 +28,25 @@
             :arrow="true"
           >
             <button
-              v-if="enableMyListButton"
+              v-if="enableMyListButton && !myList.isInMyList(movie)"
               type="button"
               class="btn btn--blur MovieSliderItem__btn"
-              @click="addMovieToMyList"
+              @click="myList.addToMyList(movie)"
             >
               <font-awesome-icon
                 :icon="['fas', 'plus']"
+                class="MovieSliderItem__btn-icon"
+                fixed-width
+              />
+            </button>
+            <button
+              v-else-if="enableMyListButton && myList.isInMyList(movie)"
+              type="button"
+              class="btn btn--blur MovieSliderItem__btn"
+              @click="myList.removeFromMyList(movie)"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'minus']"
                 class="MovieSliderItem__btn-icon"
                 fixed-width
               />
@@ -44,7 +56,7 @@
             v-if="enableDetailButton"
             type="button"
             class="btn btn--blur MovieDetails__btn"
-            @click="handleDetailClick"
+            @click="show(movie)"
           >
             <font-awesome-icon
               :icon="['fas', 'info-circle']"
@@ -64,6 +76,7 @@
 import { Tippy } from 'vue-tippy'
 import { useStore } from '@/store'
 import useEmitter from '@/composables/useEmitter'
+import useMovie from '@/composables/useMovie'
 
 const props = defineProps<{
   movie: {
@@ -78,21 +91,11 @@ const props = defineProps<{
   removeTransitonEffect?: boolean
 }>()
 
-const store = useStore()
-const emitter = useEmitter()
+const { myList } = useStore()
+const { play, show } = useMovie()
 
 const getBackgroundImageUrl = (url: string) => {
   return `url(${url})`
-}
-
-const addMovieToMyList = () => {
-  store.myList.addMovieToMyList({
-    movie: props.movie,
-  })
-}
-
-const handleDetailClick = () => {
-  emitter.emit('openMovieModal', props.movie)
 }
 </script>
 

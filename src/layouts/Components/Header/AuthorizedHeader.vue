@@ -14,7 +14,19 @@
       </ul>
     </nav>
 
-    <div class="Header__search" :class="[{ 'Header__search--active': search }, 'Header__search']">
+    <div
+      v-if="!auth.user?.subscription || auth.user?.subscription?.status !== 1"
+      class="Header__upgrade"
+    >
+      <router-link
+        class="btn btn--primary px-6 py-2 !rounded-full text-white hover:bg-red-600/50 backdrop-blur-md border border-red-500/40 shadow-md transition"
+        :to="routes.plan"
+      >
+        Nâng cấp
+      </router-link>
+    </div>
+
+    <div class="Header__search" :class="[{ 'Header__search--active': search }]">
       <label class="flex-jc">
         <font-awesome-icon :icon="['fas', 'search']" class="Header__search-icon" />
         <input
@@ -53,7 +65,7 @@ import { useStore } from '@/store'
 
 const route = useRoute()
 const router = useRouter()
-const store = useStore()
+const { auth, shared } = useStore()
 
 const search = ref('')
 const isScrolled = ref(false)
@@ -97,7 +109,7 @@ onMounted(() => {
   if (route.params.search) {
     search.value = route.params.search
   }
-  store.shared.setGenres()
+  shared.setGenres()
 })
 
 onUnmounted(() => {

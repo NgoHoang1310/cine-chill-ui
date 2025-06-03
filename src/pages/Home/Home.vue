@@ -1,13 +1,16 @@
 <template>
-  <div class="Home">
-    <div class="Home__main-slider">
+  <div class="home">
+    <div class="home__main-slider">
       <Slider ref="sliderRef" :options="options">
         <div :key="index" :class="`slide--${index}`" v-for="(movie, index) in slideShowMovies">
           <MovieDetails :movie="movie" :enable-detail-button="true" :enable-overview="true" />
         </div>
       </Slider>
     </div>
-    <div class="Home__slider-list" v-for="(slider, index) in sliders" :key="index">
+    <div v-if="history.historyGetter.length > 0" class="home__slider-list">
+      <MovieSlider category-title="Tiếp tục xem" :data="history.historyGetter" />
+    </div>
+    <div class="home__slider-list" v-for="(slider, index) in sliders" :key="index">
       <MovieSlider
         :category-title="slider.title"
         :category-key="slider.key"
@@ -15,8 +18,10 @@
         :meta="slider.meta"
       />
     </div>
+    <div v-if="myList.myListGetter.length > 0" class="home__slider-list">
+      <MovieSlider category-title="Danh sách của bạn" :data="myList.myListGetter" />
+    </div>
   </div>
-  <MovieModal />
 </template>
 
 <script setup>
@@ -24,9 +29,10 @@ import { ref, onMounted } from 'vue'
 import Slider from '../../components/Slider/Slider.vue'
 import MovieDetails from '../../components/MovieDetails/MovieDetails.vue'
 import MovieSlider from '../../components/MovieSlider/MovieSlider.vue'
-import MovieModal from '@/components/Modal/MovieModal.vue'
 import * as apiServices from '@/services'
 import * as request from '@/helpers/http'
+
+const { myList, history } = useStore()
 
 // Reactive state
 const sliders = ref([
@@ -62,7 +68,7 @@ const sliderRef = ref(null)
 
 const fetchSlideShowMovies = async () => {
   try {
-    const response = await apiServices.getMovies({ per_page: 10 })
+    const response = await apiServices.getFilms({ per_page: 5 })
     slideShowMovies.value = response.result.data
     await nextTick()
     sliderRef.value.reload()
@@ -91,13 +97,17 @@ const fetchSliderMovies = async (key, params) => {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
+  console.log(myList.myListGetter)
+
   sliderRef.value.toggleLoading()
   sliderRef.value.disableAutoPlay()
 
   fetchSlideShowMovies()
   fetchSliderMovies('hot-movies', { per_page: 10 })
   fetchSliderMovies('latest-series', { per_page: 10 })
+  myList.fetchMyList()
+  history.fetchMyHistory()
 })
 </script>
 

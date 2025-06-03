@@ -1,11 +1,15 @@
 <template>
   <div class="MovieLabels">
-    <span :class="['MovieLabels__rate']">
-      T16
-      <!-- {{ movie.age.key }} -->
+    <span
+      :class="[
+        'MovieLabels__rate',
+        'px-1 py-0.5 border border-solid border-gray-500 rounded text-xs',
+      ]"
+    >
+      {{ movie.age.key }}
     </span>
     <span class="MovieLabels__date">
-      <!-- {{ movieReleaseDate }} -->
+      {{ movie.release }}
     </span>
   </div>
 </template>

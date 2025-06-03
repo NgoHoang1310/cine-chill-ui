@@ -4,7 +4,7 @@
   height: 50px;
 
   .path {
-    stroke: hsl(210, 70, 75);
+    stroke: #e50914;
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
   }
@@ -18,7 +18,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 

@@ -95,18 +95,16 @@ watch(movie, (newValue) => {
   if (newValue.type === CONTENT_TYPE.MOVIE && newValue.trailer_url) {
     cards.value = [{ title: newValue.title, trailer_url: newValue.trailer_url }]
   }
-  console.log(cards.value)
 })
 
-onMounted(() => {
-  // const fetchMovieDetail = async (id) => {
-  //   try {
-  //     const response = await apiServices.getMovieDetail(id)
-  //     movie.value = response.result.data
-  //   } catch (error) {
-  //     console.error('Error fetching movie details:', error)
-  //   }
-  //   fetchMovieDetail()
-  // }
+watch(show, (newValue) => {
+  if (!newValue) {
+    movie.value = {}
+    cards.value = []
+  }
+})
+
+onBeforeUnmount(() => {
+  emitter.off('openMovieModal')
 })
 </script>

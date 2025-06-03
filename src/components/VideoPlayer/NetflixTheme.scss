@@ -1,0 +1,81 @@
+/* Toàn bộ giao diện */
+.vjs-netflix-theme {
+  background-color: black;
+  color: white;
+  font-family: 'Helvetica Neue', sans-serif;
+  height: 100vh;
+}
+
+/* Thanh điều khiển */
+.vjs-netflix-theme .vjs-control-bar {
+  background: rgba(0, 0, 0, 0.8);
+  height: 60px;
+  font-size: 14px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Nút bấm */
+.vjs-netflix-theme .vjs-control {
+  color: white;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  margin: 0 5px;
+}
+
+.vjs-netflix-theme .vjs-control:hover {
+  color: #e50914;
+}
+
+/* Nút phát lớn ở giữa */
+.vjs-netflix-theme .vjs-big-play-button {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  font-size: 3em;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  color: white;
+}
+
+/* Thanh tiến độ */
+.vjs-netflix-theme .vjs-progress-control {
+  height: 4px;
+  margin-top: -6px;
+}
+
+.vjs-netflix-theme .vjs-progress-holder {
+  background-color: #444;
+  height: 4px;
+}
+
+.vjs-netflix-theme .vjs-play-progress {
+  background-color: #e50914;
+  height: 4px;
+}
+
+.vjs-netflix-theme .vjs-load-progress {
+  background-color: #666;
+  height: 4px;
+}
+
+/* Tiêu đề phim giữa control-bar */
+.vjs-netflix-theme .vjs-title-display {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Ẩn biểu tượng thừa */
+.vjs-netflix-theme .vjs-pip-control,
+.vjs-netflix-theme .vjs-remaining-time,
+.vjs-netflix-theme .vjs-time-divider {
+  display: none !important;
+}

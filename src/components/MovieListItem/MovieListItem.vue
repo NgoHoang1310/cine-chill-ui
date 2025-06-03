@@ -1,45 +1,42 @@
 <template>
   <div
     class="MovieListItem"
-    :style="{ backgroundImage: 'url(' + getImageUrl(movie.poster_path, 3) + ')' }"
+    :style="{
+      backgroundImage: getBackgroundImageUrl(movie.backdrop_url),
+    }"
   >
     <div class="MovieListItem__details" @click="selectMovie">
-      <h3 class="MovieListItem__title">
+      <h3 class="MovieListItem__title line-clamp-2 !m-0">
         {{ movie.title ? movie.title : movie.name }}
       </h3>
       <MovieLabels :movie="movie" />
-      <p class="MovieListItem__description">
-        {{ movie.overview }}
+      <p class="MovieListItem__description line-clamp-2">
+        {{ movie.description || movie.overview }}
       </p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import MovieLabels from '../MovieLabels/MovieLabels.vue'
-import getImageUrl from '../../helpers/getImageUrl'
+import useEmitter from '@/composables/useEmitter'
+import useMovie from '@/composables/useMovie'
 
-export default {
-  name: 'MovieListItem',
-  props: {
-    movie: {
-      name: String,
-      title: String,
-      overview: String,
-      poster_path: String,
-    },
+const props = defineProps({
+  movie: {
+    type: Object,
+    required: true,
   },
-  components: {
-    MovieLabels,
-  },
-  methods: {
-    getImageUrl(url, size) {
-      return getImageUrl(url, size, 'poster')
-    },
-    selectMovie() {
-      this.$emit('select-movie', this.movie)
-    },
-  },
+})
+
+const emitter = useEmitter()
+const { play, show } = useMovie()
+
+const getBackgroundImageUrl = (url) => {
+  return `url(${url})`
+}
+const selectMovie = () => {
+  emitter.emit('openMovieModal', props.movie)
 }
 </script>
 

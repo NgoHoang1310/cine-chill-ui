@@ -9,22 +9,49 @@
       <h3 class="MovieSliderItem__title">
         {{ movie.title || movie.name }}
       </h3>
+      <ProgressBar
+        v-if="movie?.watch_history?.progress_seconds"
+        class="mb-2"
+        :currentTime="movie?.watch_history?.progress_seconds"
+        :duration="movie?.watch_history?.duration_seconds"
+        :read-only="true"
+      />
       <div class="flex">
-        <button type="button" class="btn btn--play MovieSliderItem__btn" @click="addMovieToMyList">
+        <button type="button" class="btn btn--play MovieSliderItem__btn" @click="play(movie)">
           <font-awesome-icon
             :icon="['fas', 'play']"
             class="MovieSliderItem__btn-icon"
             fixed-width
           />
         </button>
-        <tippy content="Thêm vào danh sách của tôi" theme="light" placement="top" :arrow="true">
+        <tippy
+          :content="
+            !myList.isInMyList(movie) ? 'Thêm vào danh sách của tôi' : 'Xóa khỏi danh sách của tôi'
+          "
+          theme="light"
+          placement="top"
+          :arrow="true"
+        >
           <button
+            v-if="!myList.isInMyList(movie)"
             type="button"
             class="btn btn--blur MovieSliderItem__btn"
-            @click="addMovieToMyList"
+            @click="myList.addToMyList(movie)"
           >
             <font-awesome-icon
               :icon="['fas', 'plus']"
+              class="MovieSliderItem__btn-icon"
+              fixed-width
+            />
+          </button>
+          <button
+            v-else
+            type="button"
+            class="btn btn--blur MovieSliderItem__btn"
+            @click="myList.removeFromMyList(movie)"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'minus']"
               class="MovieSliderItem__btn-icon"
               fixed-width
             />
@@ -36,13 +63,9 @@
           placement="top"
           class="ml-auto"
           :arrow="true"
-          @click="handleDetailClick"
+          @click="show(movie)"
         >
-          <button
-            type="button"
-            class="btn btn--blur MovieSliderItem__btn"
-            @click="addMovieToMyList"
-          >
+          <button type="button" class="btn btn--blur MovieSliderItem__btn">
             <font-awesome-icon
               :icon="['fas', 'info-circle']"
               class="MovieSliderItem__btn-icon"
@@ -57,23 +80,21 @@
 
 <script setup>
 import { Tippy } from 'vue-tippy'
-import useEmitter from '@/composables/useEmitter'
+import useMovie from '@/composables/useMovie'
+import ProgressBar from '../ProgressBar/ProgressBar.vue'
 
-const props = defineProps({
+defineProps({
   movie: {
     name: String,
     title: String,
     backdrop_url: String,
   },
 })
-const emitter = useEmitter()
+const { play, show } = useMovie()
+const { myList } = useStore()
 
 const getBackgroundImageUrl = (url) => {
   return `url(${url})`
-}
-
-const handleDetailClick = () => {
-  emitter.emit('openMovieModal', props.movie)
 }
 </script>
 

@@ -20,7 +20,12 @@
 
     <!-- Danh sách tập -->
     <div v-if="episodes.length > 0">
-      <EpisodeListItem v-for="(episode, index) in episodes" :key="index" :episode="episode" />
+      <EpisodeListItem
+        :active="episode?.id == currentEpisode?.id"
+        v-for="(episode, index) in episodes"
+        :key="index"
+        :episode="episode"
+      />
     </div>
     <p v-else class="text-white text-center text-md font-medium py-4">Chưa có tập phim nào</p>
   </div>
@@ -39,14 +44,29 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  currentSeason: {
+    type: Object,
+    default: null,
+  },
+  currentEpisode: {
+    type: Object,
+    default: null,
+  },
 })
 
 const episodes = ref([])
-const currentSeason = ref(props.seasons[0]?.id || null)
+const currentSeason = ref(props.currentSeason || props.seasons[0]?.id || null)
+const currentEpisode = ref(props.currentEpisode || null)
 
 const fetchEpisodes = async () => {
   try {
-    const response = await apiServices.getEpisodesBySeasons(props.series.id, currentSeason.value)
+    let response = null
+    if (currentSeason.value) {
+      response = await apiServices.getEpisodesBySeasons(props.series.id, currentSeason.value)
+    } else {
+      response = await apiServices.getEpisodesBySeries(props.series.id)
+    }
+
     episodes.value = response.result.data
   } catch (error) {
     console.error('Error fetching episodes:', error)
@@ -60,6 +80,7 @@ const handleSeasonChange = (season) => {
 }
 
 onMounted(() => {
+  console.log(props.currentEpisode)
   fetchEpisodes()
 })
 </script>

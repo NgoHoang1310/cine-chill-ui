@@ -5,5 +5,5 @@
 </template>
 
 <style lang="scss">
-  @import 'Spinner';
+@import 'Spinner';
 </style>

@@ -82,6 +82,12 @@ function loadMore() {
 }
 
 // Lifecycle
+onMounted(async () => {
+  movies.value = props.data
+  await nextTick()
+  sliderRef.value.reload()
+})
+
 watch(
   () => props.data,
   async (newValue) => {

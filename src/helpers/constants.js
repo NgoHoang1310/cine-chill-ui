@@ -11,8 +11,12 @@ export const routes = {
   movies: '/movies',
   popular: '/popular',
   myList: '/my-list',
+  watch: '/watch/:uuid',
   languages: '/languages',
   search: '/search',
+  payment: '/payment',
+  paymentResult: '/payment/return',
+  plan: '/plans',
 };
 
 export const actions = {
@@ -39,4 +43,24 @@ export const actions = {
 export const CONTENT_TYPE = {
   MOVIE: 0,
   SERIES: 1,
+}
+
+export const QUALITIES = {
+  0: {
+    name: 'FUD',
+    value: '1080p',
+    description: 'Full HD',
+  },
+  1: {
+    name: 'HD',
+    value: '720p',
+  },
+  2: {
+    name: 'SD',
+    value: '480p',
+  },
+  'default': {
+    name: 'Auto',
+    value: 'Auto',
+  }
 }

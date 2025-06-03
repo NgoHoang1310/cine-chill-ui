@@ -35,5 +35,22 @@ function normalizeYoutubeLink(url) {
     }
 }
 
+const formatCurrency = (amount, currency = 'VND', locale = 'vi-VN') => {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 0,
+    }).format(amount);
+};
 
-export { convertMinutesToHours, normalizeYoutubeLink };
+function formatDateTime(raw) {
+    const year = raw.substring(0, 4);
+    const month = raw.substring(4, 6);
+    const day = raw.substring(6, 8);
+    const hour = raw.substring(8, 10);
+    const minute = raw.substring(10, 12);
+
+    return `${day}/${month}/${year} ${hour}:${minute}`;
+}
+
+export { convertMinutesToHours, normalizeYoutubeLink, formatCurrency, formatDateTime };

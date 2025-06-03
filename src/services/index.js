@@ -1,2 +1,6 @@
 export * from './authServices'
 export * from './movieServices'
+export * from './genresServices'
+export * from './plansServices'
+export * from './episodeServices'
+export * from './paymentServices'

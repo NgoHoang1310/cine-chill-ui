@@ -4,6 +4,7 @@ import {
   faPlus,
   faMinus,
   faPlay,
+  faPause,
   faChevronDown,
   faChevronRight,
   faChevronLeft,
@@ -12,6 +13,11 @@ import {
   faInfoCircle,
   faSearch,
   faTimes,
+  faArrowLeft,
+  faUndo,
+  faCompress,
+  faSlidersH,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -23,6 +29,7 @@ library.add(
   faGoogle,
   faSortDown,
   faPlus,
+  faPause,
   faMinus,
   faPlay,
   faChevronDown,
@@ -33,4 +40,9 @@ library.add(
   faInfoCircle,
   faSearch,
   faTimes,
+  faArrowLeft,
+  faUndo,
+  faCompress,
+  faSlidersH,
+  faCheck
 );

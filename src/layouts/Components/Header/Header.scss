@@ -17,7 +17,7 @@
   transition: background-color 0.2s ease-in-out;
   @include sm {
     grid-template-columns: auto 1fr auto auto;
-    grid-template-areas: 'logo nav search actions';
+    grid-template-areas: 'logo nav upgrade search actions';
     padding: 1rem 2rem;
   }
 
@@ -137,6 +137,10 @@
         font-size: 1rem;
       }
     }
+  }
+
+  &__upgrade {
+    grid-area: upgrade;
   }
 
   &__actions {

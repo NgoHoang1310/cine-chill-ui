@@ -51,8 +51,6 @@ const useAuthStore = defineStore('auth', () => {
   }
 
   onAuthStateChanged(auth, async (currentUser) => {
-    console.log('currentUser', currentUser)
-
     if (!currentUser) {
       loading.value = false
       return
@@ -63,7 +61,7 @@ const useAuthStore = defineStore('auth', () => {
     }
 
     try {
-      await apiServices.login({
+      const response = await apiServices.login({
         uuid: currentUser.uid,
         email: currentUser.email,
         user_name: currentUser.displayName,
@@ -73,7 +71,7 @@ const useAuthStore = defineStore('auth', () => {
         last_login: currentUser.metadata?.lastLoginAt,
       })
       loading.value = false
-      user.value = currentUser
+      user.value = { ...response.data, photoURL: currentUser.photoURL }
     } catch (error) {
       user.value = null
       token.value = null
