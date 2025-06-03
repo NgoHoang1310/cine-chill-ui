@@ -56,8 +56,8 @@ const useAuthStore = defineStore('auth', () => {
       return
     }
     token.value = {
-      accessToken: currentUser?.stsTokenManager?.accessToken,
-      refreshToken: currentUser?.stsTokenManager?.refreshToken,
+      accessToken: await currentUser.getIdToken(),
+      refreshToken: currentUser.refreshToken,
     }
 
     try {
@@ -68,11 +68,12 @@ const useAuthStore = defineStore('auth', () => {
         phone_number: currentUser.phoneNumber,
         provider: currentUser.providerData[0]?.providerId,
         avatar_link: currentUser.photoURL,
-        last_login: currentUser.metadata?.lastLoginAt,
+        last_login: currentUser.metadata?.lastSignInTime,
       })
       loading.value = false
       user.value = { ...response.data, photoURL: currentUser.photoURL }
     } catch (error) {
+      console.error('Error fetching user data:', error)
       user.value = null
       token.value = null
       loading.value = false

@@ -53,7 +53,7 @@
   </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import ProfileDropdown from '@/components/ProfileDropdown/ProfileDropdown.vue'
 import NetflixLogo from '@/assets/images/netflix.svg'
 import debounce from '@/helpers/debounce'
