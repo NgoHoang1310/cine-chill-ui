@@ -17,7 +17,8 @@ import {
   faUndo,
   faCompress,
   faSlidersH,
-  faCheck
+  faCheck,
+  faBell
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -44,5 +45,6 @@ library.add(
   faUndo,
   faCompress,
   faSlidersH,
-  faCheck
+  faCheck,
+  faBell
 );

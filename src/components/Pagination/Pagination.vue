@@ -60,12 +60,12 @@
       },
       pageChange(page) {
         if (page !== this.currentPage) {
-          let params = { ...this.$route.query, page: +page || 1 };
+          const params = { ...this.$route.query, page: +page || 1 };
           this.updateQuery(params);
         }
       },
       updateQuery(params) {
-        let newQuery = Object.keys(params)
+        const newQuery = Object.keys(params)
           .filter(key => {
             if (key === '') return false;
             if (params[key] instanceof Array) return params[key].length > 0;

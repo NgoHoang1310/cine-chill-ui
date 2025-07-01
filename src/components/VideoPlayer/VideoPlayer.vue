@@ -149,11 +149,11 @@
 
             <!-- Right -->
             <div class="flex items-center gap-5 text-4xl">
-              <button v-if="movie?.type === CONTENT_TYPE.SERIES" class="text-white">
+              <button v-if="movie?.type == CONTENT_TYPE.SERIES" class="text-white">
                 <ForwardIcon />
               </button>
               <button
-                v-if="movie?.type === CONTENT_TYPE.SERIES"
+                v-if="movie?.type == CONTENT_TYPE.SERIES"
                 class="text-white"
                 @mouseenter="
                   () => {

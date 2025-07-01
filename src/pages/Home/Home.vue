@@ -98,8 +98,6 @@ const fetchSliderMovies = async (key, params) => {
 }
 
 onMounted(() => {
-  console.log(myList.myListGetter)
-
   sliderRef.value.toggleLoading()
   sliderRef.value.disableAutoPlay()
 

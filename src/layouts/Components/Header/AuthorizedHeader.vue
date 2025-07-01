@@ -1,7 +1,7 @@
 <template>
   <header :class="[{ 'Header--bg': isScrolled }, 'Header']">
     <router-link :to="homeRoute">
-      <NetflixLogo class="Header__logo" />
+      <CineChillLogo class="Header__logo" />
     </router-link>
 
     <nav :class="[{ 'Header__nav--opened': isMenuOpened }, 'Header__nav']">
@@ -15,7 +15,7 @@
     </nav>
 
     <div
-      v-if="!auth.user?.subscription || auth.user?.subscription?.status !== 1"
+      v-if="!auth.user?.subscription || auth.user?.subscription === 'expired'"
       class="Header__upgrade"
     >
       <router-link
@@ -24,6 +24,10 @@
       >
         Nâng cấp
       </router-link>
+    </div>
+
+    <div class="Header__notification">
+      <NotificationDropdown />
     </div>
 
     <div class="Header__search" :class="[{ 'Header__search--active': search }]">
@@ -55,7 +59,9 @@
 
 <script setup>
 import ProfileDropdown from '@/components/ProfileDropdown/ProfileDropdown.vue'
+import NotificationDropdown from '@/components/NotificationDropdown/NotificationDropdown.vue'
 import NetflixLogo from '@/assets/images/netflix.svg'
+import CineChillLogo from '@/assets/images/cinechill.svg'
 import debounce from '@/helpers/debounce'
 import { routes } from '@/helpers/constants'
 
@@ -76,7 +82,6 @@ const navList = ref([
   { title: 'Trang chủ', link: routes.home },
   { title: 'Series', link: routes.series },
   { title: 'Phim', link: routes.movies },
-  { title: 'Mới & Phổ biến', link: routes.popular },
   { title: 'Danh sách của tôi', link: routes.myList },
   { title: 'Duyệt theo ngôn ngữ', link: routes.languages },
 ])
@@ -90,6 +95,10 @@ watch(path, () => {
 watch(
   search,
   debounce((value) => {
+    if (!value) {
+      router.push(routes.home)
+      return
+    }
     router.push(`${routes.search}/${value}`)
   }, 600),
 )

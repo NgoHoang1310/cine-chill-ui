@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import '@/helpers/fontawesome'
+import socket from '@/plugins/socket'
 
 import App from './App.vue'
 import mitt from 'mitt'
@@ -14,5 +15,5 @@ app.config.globalProperties.emitter = mitt()
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.use(createPinia())
 app.use(router)
-
+app.use(socket)
 app.mount('#app')

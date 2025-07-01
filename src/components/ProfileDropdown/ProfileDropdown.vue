@@ -6,20 +6,19 @@
     </div>
     <div class="dropdown">
       <div class="dropdown__list">
-        <button class="btn dropdown__btn">Manage Profiles</button>
-        <button class="btn dropdown__btn" v-on:click="handleLogOut">Sign out of Netflix</button>
+        <router-link to="/profile" class="btn dropdown__btn">Quản lí hồ sơ</router-link>
+        <router-link to="/plans" class="btn dropdown__btn">Gói cước</router-link>
+        <button class="btn dropdown__btn" v-on:click="handleLogOut">Đăng xuất</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
 import { useStore } from '@/store'
 import { routes } from '@/helpers/constants'
 
 const { auth } = useStore()
-const isDropdownOpened: Ref<boolean> = ref(false)
 
 const handleLogOut = async () => {
   await auth.logout()

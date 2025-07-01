@@ -53,4 +53,7 @@ function formatDateTime(raw) {
     return `${day}/${month}/${year} ${hour}:${minute}`;
 }
 
+// utils/timeAgo.js
+
+
 export { convertMinutesToHours, normalizeYoutubeLink, formatCurrency, formatDateTime };

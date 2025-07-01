@@ -56,6 +56,8 @@ defineProps({
 const emitter = useEmitter()
 
 const changeEpisode = (episode) => {
+  console.log('Change episode:', episode)
+
   emitter.emit('changeEpisode', episode)
 }
 </script>

@@ -30,7 +30,7 @@ const router = createRouter({
         { path: routes.signIn, name: 'SignIn', component: SignIn, meta: { guestOnly: true } },
         { path: routes.startNow, name: 'StartNow', component: StartNow, meta: { guestOnly: true } },
         { path: routes.signUp, name: 'SignUp', component: SignUp, meta: { guestOnly: true } },
-        { path: routes.home, name: 'Home', component: Home, meta: { requiresAuth: false } },
+        { path: routes.home, name: 'Home', component: Home, meta: { requiresAuth: true } },
         {
           path: routes.paymentResult,
           name: 'PaymentResult',

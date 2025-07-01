@@ -1,38 +1,44 @@
 <template>
   <div class="page__content">
-    <h1 class="page__title">Search</h1>
+    <h1 class="page__title">Tìm kiếm</h1>
     <MovieList
-      :request-url="'search/movie?query=' + search"
-      :empty-list-title="'Your search for &quot;' + search + '&quot; did not have any matches.'"
+      :initial-movie-list="movie"
+      :empty-list-title="'Từ khóa &quot;' + search + '&quot; không có kết quả nào.'"
     />
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
 import MovieList from '@/components/MovieList/MovieList.vue'
+import * as apiServices from '@/services'
 
-export default {
-  name: 'Search',
-  data() {
-    return {
-      search: this.$route.params.search,
+// Lấy route
+const route = useRoute()
+
+// Khởi tạo reactive state
+const movie = ref([])
+const search = ref(route.params.search || '')
+
+const fetchMovie = async (search) => {
+  try {
+    const response = await apiServices.getFilms({
+      search: search,
+      per_page: 10,
+    })
+    movie.value = response.result.data
+  } catch (error) {
+    console.error('Error fetching movies:', error)
+  }
+}
+// Tự động cập nhật khi route param "search" thay đổi
+watch(
+  () => route.params.search,
+  (newSearch) => {
+    if (newSearch !== null && newSearch !== undefined) {
+      search.value = newSearch
+      fetchMovie(newSearch)
     }
   },
-  computed: {
-    query() {
-      return this.$route.params.search
-    },
-  },
-  components: {
-    MovieList,
-  },
-  watch: {
-    query(value) {
-      if (value !== null && value !== undefined) {
-        console.log(this.$route.params)
-        this.search = this.$route.params.search
-      }
-    },
-  },
-}
+)
 </script>

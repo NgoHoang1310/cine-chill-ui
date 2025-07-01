@@ -3,7 +3,6 @@
     <h1 class="text-4xl font-bold mb-10 text-center">Chọn gói xem phim phù hợp với bạn</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
-      <!-- GÓI BASIC -->
       <div
         v-for="(plan, index) in plans"
         :key="index"
@@ -14,8 +13,18 @@
           {{ formatCurrency(plan?.price) }} / {{ plan?.duration_days }} ngày
         </p>
         <div v-html="plan?.description" class="flex-1 text-sm text-white space-y-2 mb-6"></div>
+        <div v-if="plan?.vouchers?.length" class="mb-4">
+          <h3 class="text font-semibold mb-2">Ưu đãi</h3>
+          <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+            <li v-for="(voucher, index) in plan?.vouchers" :key="index">
+              {{ voucher?.code }} - Giảm
+              {{ voucher?.type == 1 ? formatCurrency(voucher?.value) : voucher?.value + '%' }}
+              <small class=" ">(Thông tin thêm)</small>
+            </li>
+          </ul>
+        </div>
         <button
-          @click="handleBuyPlan(plan)"
+          @click="emitter.emit('openPlanConfirmModal', plan)"
           class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-full font-semibold transition"
           :class="{
             'opacity-50 pointer-events-none':
@@ -43,40 +52,19 @@
 import * as apiService from '@/services'
 import { formatCurrency } from '@/helpers/commons'
 import { useStore } from '@/store'
+import useEmitter from '@/composables/useEmitter'
 
 const { auth } = useStore()
+const emitter = useEmitter()
 const { y: scrollTop } = useScroll(window)
 const scrollToTop = () => {
   scrollTop.value = 0
 }
 const plans = ref([])
 
-const handleBuyPlan = async (plan) => {
-  try {
-    const response = await apiService.createPayment({
-      amount: plan.price,
-      order_name: plan.name,
-      plan_id: plan.id,
-    })
-    if (response.success) {
-      // Redirect to payment page or show success message
-      console.log('Subscription created successfully:', response)
-      if (!response?.result?.url) {
-        console.error('No payment URL returned from the API')
-        return
-      }
-      window.location.href = response.result.url
-    } else {
-      console.error('Failed to create subscription:', response.message)
-    }
-  } catch (error) {
-    console.error('Error creating subscription:', error)
-  }
-}
-
 onMounted(async () => {
   try {
-    const response = await apiService.getPlans()
+    const response = await apiService.getPlans({ user_uuid: auth?.user?.uuid })
     plans.value = response.result.data
   } catch (error) {
     console.error('Error fetching plans:', error)

@@ -12,9 +12,15 @@ export default function useMovie() {
             return;
         }
 
-        if (!auth.user?.subscription || auth.user?.subscription?.status !== 1) {
+        if (!auth.user?.subscription) {
             console.error("User does not have a subscription");
             emitter.emit('openUpgradeModal')
+            return;
+        }
+
+        if (auth.user?.subscription === 'expired') {
+            console.error("Subscription has expired");
+            emitter.emit('openUpgradeModal', { message: 'Gói của bạn đã hết hạn.' })
             return;
         }
 

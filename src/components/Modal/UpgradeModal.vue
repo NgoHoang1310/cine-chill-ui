@@ -6,7 +6,7 @@
     @update:model-value="show = $event"
   >
     <div class="bg-[#141414] text-white rounded-xl max-w-md w-full px-6 py-8 shadow-lg">
-      <h2 class="text-2xl font-semibold mb-4">Nâng cấp tài khoản</h2>
+      <h2 class="text-2xl font-semibold mb-4">{{ message }}</h2>
       <p class="text-gray-300 mb-6">
         Tận hưởng trải nghiệm không giới hạn, không quảng cáo và chất lượng cao hơn khi nâng cấp tài
         khoản của bạn.
@@ -38,11 +38,14 @@ import { routes } from '@/helpers/constants'
 const emitter = useEmitter()
 
 const show = ref(false)
+const message = ref('Nâng cấp tài khoản')
 
 onMounted(() => {
-  emitter.on('openUpgradeModal', () => {
+  emitter.on('openUpgradeModal', (value) => {
     console.log('Upgrade modal opened')
-
+    if (value?.message) {
+      message.value = value.message
+    }
     show.value = true
   })
 

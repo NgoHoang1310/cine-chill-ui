@@ -54,15 +54,18 @@ export default {
     emptyListTitle(value) {
       this.emptyTitle = value
     },
-    initialMovieList(value) {
-      if (value !== null && value !== undefined) {
-        this.movieList = value
-        this.selectedMovie = null
-      }
+    initialMovieList: {
+      handler(value) {
+        if (value !== null && value !== undefined) {
+          this.movieList = value
+          this.selectedMovie = null
+        }
 
-      this.$nextTick(() => {
-        this.loading = false
-      })
+        this.$nextTick(() => {
+          this.loading = false
+        })
+      },
+      immediate: true,
     },
   },
   methods: {

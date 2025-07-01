@@ -41,12 +41,8 @@ watch(shared, (newVal) => {
     case 'auth/invalid-credential':
       toast.error('Email hoặc mật khẩu không đúng. Vui lòng thử lại.')
       break
-    default:
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại.')
   }
 })
-
-onUnmounted(() => {})
 </script>
 
 <template>
