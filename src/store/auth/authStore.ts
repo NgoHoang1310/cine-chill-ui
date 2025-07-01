@@ -68,8 +68,10 @@ const useAuthStore = defineStore('auth', () => {
         phone_number: currentUser.phoneNumber,
         provider: currentUser.providerData[0]?.providerId,
         avatar_link: currentUser.photoURL,
-        last_login: currentUser.metadata?.lastLoginAt,
+        last_login: (currentUser.metadata as any)?.lastLoginAt,
       })
+      console.log(currentUser.metadata)
+
       loading.value = false
       user.value = { ...response.data, photoURL: currentUser.photoURL }
     } catch (error) {
